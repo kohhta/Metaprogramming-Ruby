@@ -48,4 +48,3 @@ class TestTryOut < MiniTest::Test
     assert_raises (ArgumentError) {TryOut.new("John", "Milton", "Cage", "Jr")}
   end
 end
-
