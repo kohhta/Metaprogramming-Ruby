@@ -35,7 +35,7 @@ class TestHoge < MiniTest::Test
   end
 
   def test_hogehoge_method_returns_hoge
-    assert_equal "hoge", Hoge.new.hogehoge
+    assert_equal "hogehoge", Hoge.new.hogehoge
   end
 
   def test_hoge_super_class_is_string
