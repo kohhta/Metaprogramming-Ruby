@@ -22,6 +22,7 @@ class TestTryOver03Q1 < Minitest::Test
   def test_q2_proxy_foo
     source = TryOver3::A2.new("foo", "foofoo")
     assert_equal "foofoo", TryOver3::A2Proxy.new(source).foo
+
   end
 
   def test_q2_proxy_hoge_writer
@@ -121,4 +122,3 @@ class TestTryOver03Q1 < Minitest::Test
     end.new
   end
 end
-

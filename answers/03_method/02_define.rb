@@ -12,8 +12,8 @@ end
 # Q2
 #
 # 問題の解説
-# defind_singleton_methodを利用して動的に特異メソッドを定義することで、条件2を満たしています。
-# define_methodはModuleのインスタンスメソッドなので、initializeメソッド中では使えません。
+# define_singleton_method を利用して動的に特異メソッドを定義することで、条件2を満たしています。
+# define_method は Module のインスタンスメソッドなので、initializeメソッド中では使えません。
 # A2.define_methodのようにすれば使えますが、それだとA2クラスのインスタンスメソッドになるので
 # すべてのA2インスタンスで利用できてしまい、
 # 「メソッドが定義されるのは同時に生成されるオブジェクトのみで、別のA2インスタンスには（同じ値を含む配列を生成時に渡さない限り）定義されない」
@@ -42,11 +42,11 @@ end
 # Q3.
 #
 # 問題の解説
-# 3章にはまだ登場していない概念ですが、includedフックを利用してモジュールがincludeされたときの振る舞いを記述しています。
-# my_attr_accessorメソッドはクラスメソッドに相当するため、includedメソッドの引数として渡されてきたクラスに直接define_singleton_methodでメソッドを追加しています。
-# さらにmy_attr_accessorメソッド実行時にインスタンスメソッドを追加するためにdefine_methodを利用しています。
-# セッターで定義した値を格納するために`@my_attr_accessor`をハッシュとして定義して利用しています。
-# `?`つきのメソッドを定義するために、セッター実行時にdefine_aingleton_methodでメソッドを追加しています。
+# 3章にはまだ登場していない概念ですが、included フックを利用してモジュールが include されたときの振る舞いを記述しています。
+# my_attr_accessor メソッドはクラスメソッドに相当するため、included メソッドの引数として渡されてきたクラスに直接 define_singleton_method でメソッドを追加しています。
+# さらに my_attr_accessor メソッド実行時にインスタンスメソッドを追加するために define_method を利用しています。
+# セッターで定義した値を格納するために `@my_attr_accessor` をハッシュとして定義して利用しています。
+# `?`つきのメソッドを定義するために、セッター実行時に define_aingleton_method でメソッドを追加しています。
 #
 module OriginalAccessor
   def self.included(base)

@@ -25,6 +25,8 @@ class TestDefine < MiniTest::Test
     instance = A2.new(["hoge", "fuga"])
 
     assert_equal true, instance.methods.include?(:dev_team)
+    assert_equal true, instance.methods.include?(:hoge_hoge)
+    assert_equal true, instance.methods.include?(:hoge_fuga)
     assert_equal "SmartHR Dev Team", instance.hoge_hoge(nil)
     assert_equal "hoge_hogehoge_hoge", instance.hoge_hoge(2)
     assert_equal "hoge_fugahoge_fugahoge_fuga", instance.hoge_fuga(3)
@@ -84,15 +86,17 @@ class TestDefine < MiniTest::Test
     instance = A3.new
     instance.hoge = "1"
 
-    assert_equal false, instance.methods.include?(:hoge?)
+    assert_equal true, instance.methods.include?(:hoge?)
     assert_equal "1", instance.hoge
+
+    instance.hoge = nil
+    assert_equal false, instance.hoge?
   end
 
   def test_answer_a3_number
     instance = A3.new
     instance.hoge = 1
 
-    assert_equal false, instance.methods.include?(:hoge?)
     assert_equal 1, instance.hoge
   end
 
@@ -100,7 +104,6 @@ class TestDefine < MiniTest::Test
     instance = A3.new
     instance.hoge = [1, 2]
 
-    assert_equal false, instance.methods.include?(:hoge?)
     assert_equal [1, 2], instance.hoge
   end
 
