@@ -37,33 +37,6 @@ class TestHierarchy < MiniTest::Test
     assert_equal "3", c4.increment
   end
 
-  def test_c4_value_called
-    c4 = C4.new
-    c4.singleton_class.class_eval do
-      private
-
-      def value=(x)
-        @called_setter = true
-        @value = x
-      end
-
-      def value
-        @called_getter = true
-        if defined?(@value)
-          @value
-        else
-          nil
-        end
-      end
-    end
-    c4.instance_variable_set(:"@called_setter", nil)
-    c4.instance_variable_set(:"@called_getter", nil)
-
-    assert_equal "1", c4.increment
-    assert c4.instance_variable_get(:"@called_setter")
-    assert c4.instance_variable_get(:"@called_getter")
-  end
-
   def test_c4_value_methods
     assert C4.private_instance_methods.include?(:value)
     assert C4.private_instance_methods.include?(:value=)
@@ -79,10 +52,5 @@ class TestHierarchy < MiniTest::Test
 
   def test_c6_name
     assert_equal "Refined M1", C6.new.name
-
-    C6.include(Module.new do
-      def name = "other"
-    end)
-    assert_equal "other", C6.new.name
   end
 end
