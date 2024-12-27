@@ -1,16 +1,38 @@
 TryOver3 = Module.new
 # Q1
 # 以下要件を満たすクラス TryOver3::A1 を作成してください。
-# - run_test というインスタンスメソッドを持ち、それはnilを返す
+# - run_test というインスタンスメソッドを持ち、それは nil を返す
 # - `test_` から始まるインスタンスメソッドが実行された場合、このクラスは `run_test` メソッドを実行する
 # - `test_` メソッドがこのクラスに実装されていなくても `test_` から始まるメッセージに応答することができる
 # - TryOver3::A1 には `test_` から始まるインスタンスメソッドが定義されていない
+class TryOver3::A1
+  def run_test
+    nil
+  end
 
+  def method_missing(name, *)
+    if name.to_s.start_with?('test_')
+      run_test
+    else
+      super
+    end
+  end
 
-# Q2
-# 以下要件を満たす TryOver3::A2Proxy クラスを作成してください。
-# - TryOver3::A2Proxy は initialize に TryOver3::A2 のインスタンスを受け取り、それを @source に代入する
-# - TryOver3::A2Proxy は、@sourceに定義されているメソッドが自分自身に定義されているように振る舞う
+  def respond_to_missing?(name, _)
+    name.to_s.start_with?('test_')
+  end
+end
+
+# # Q2
+# # 以下要件を満たす TryOver3::A2Proxy クラスを作成してください。
+# # - TryOver3::A2Proxy は initialize に TryOver3::A2 のインスタンスを受け取り、それを @source に代入する
+# # - TryOver3::A2Proxy は、@sourceに定義されているメソッドが自分自身に定義されているように振る舞う
+# class TryOver3::A2
+#   def initialize(name, value)
+#     instance_variable_set("@#{name}", value)
+#     self.class.attr_accessor name.to_sym unless respond_to? name.to_sym
+#   end
+# end
 class TryOver3::A2
   def initialize(name, value)
     instance_variable_set("@#{name}", value)
@@ -18,11 +40,29 @@ class TryOver3::A2
   end
 end
 
+class TryOver3::A2Proxy
+  def initialize(source)
+    @source = source
+  end
+
+  def method_missing(name, *args, &block)
+    if @source.respond_to?(name)
+      @source.send(name, *args, &block)
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(name, include_all)
+    @source.respond_to?(name, include_all)
+  end
+end
+
 
 # Q3.
-# 02_define.rbのQ3ではOriginalAccessor の my_attr_accessor で定義した getter/setter に
+# 02_define.rb の Q3 では OriginalAccessor の my_attr_accessor で定義した getter/setter に
 # boolean の値が入っている場合には #{name}? が定義されるようなモジュールを実装しました。
-# 今回は、そのモジュールに boolean 以外が入っている場合には #{name}? メソッドが存在しないようにする変更を加えてください。
+# 今回は、そのモジュールに boolean 以外が入っている場合、 #{name}? メソッドが存在しないようにする変更を加えてください。
 # （以下のコードに変更を加えてください）
 #
 module TryOver3::OriginalAccessor2
@@ -36,6 +76,10 @@ module TryOver3::OriginalAccessor2
         if [true, false].include?(value) && !respond_to?("#{name}?")
           self.class.define_method "#{name}?" do
             @attr == true
+          end
+        else
+          if respond_to?("#{name}?")
+            mod.remove_method "#{name}?"
           end
         end
         @attr = value
@@ -51,6 +95,24 @@ end
 # TryOver3::A4::Hoge.run
 # # => "run Hoge"
 # このとき、TryOver3::A4::Hogeという定数は定義されません。
+class TryOver3::A4
+  # 定数が見つからないときに呼び出されるメソッド
+  def self.const_missing(const)
+    if @consts.include?(const)
+      obj = Class.new do
+        define_singleton_method(:run) { "run #{const}" }
+      end
+      obj
+    else
+      super
+    end
+  end
+
+  # runners メソッドで定数名を設定
+  def self.runners=(consts)
+    @consts = consts
+  end
+end
 
 
 # Q5. チャレンジ問題！ 挑戦する方はテストの skip を外して挑戦してみてください。
